@@ -1,11 +1,12 @@
-FROM openjdk:21
+# Build stage
+FROM gradle:8.6-jdk17 AS build
 WORKDIR /app
+COPY . .
+RUN gradle build --no-daemon
 
-COPY build/libs/*.jar app/app.jar
-
-#ENV SPRING_DATASOURCE_URL jdbc:mysql://mysql:3306/dct
-#ENV SPRING_DATASOURCE_USERNAME root
-#ENV SPRING_DATASOURCE_PASSWORD 3226
-
-EXPOSE 8003
-ENTRYPOINT ["java", "-jar", "app/app.jar"]
+# Run stage
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/build/libs/your-app-name-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
