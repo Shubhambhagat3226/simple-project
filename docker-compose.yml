@@ -10,20 +10,24 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: mysql_db_docker
       PMA_PORT: 3306
-      PMA_USER: root
-      PMA_PASSWORD: 3226
+      MYSQL_ROOT_PASSWORD: 3226
+      UPLOAD_LIMIT: 256M  # Increase upload limit for larger SQL files
     ports:
-      - "8002:80"
+      - "8080:80"
     depends_on:
       - mysql
+    networks:
+      - app-network
 
   springboot:
     build: .
@@ -50,6 +54,10 @@ services:
       - "8003:8003"
     depends_on:
       - mysql
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   mysql_data:
