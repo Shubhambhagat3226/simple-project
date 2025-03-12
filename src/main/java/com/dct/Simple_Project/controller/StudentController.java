@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "https://shubhambhagat3226.github.io/simple-page")
+@CrossOrigin(origins = "https://shubhambhagat3226.github.io")
 public class StudentController {
 
     private final StudentService service;
